@@ -78,19 +78,10 @@ function loadWikiLinks() {
 
 function loadData() {
 
-    var $body = $('body');  
-    var $greeting = $('#greeting');
-   
-
     loadBgImage();
     loadNYData();
     loadWikiLinks();
  
-
-    // load streetview
-
-    // YOUR CODE GOES HERE!
-
     return false;
 };
 
