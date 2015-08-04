@@ -21,7 +21,8 @@ function loadNYData() {
 
     $nytElem.text("");       
 
-    var nyTimesURL = 'http://api.nytimes.com/svc/search/v2/articlesearch.json?q=' + city + '&sort=newest&api-key=677fe111c8a965cb5a566873b1d34753:6:72581648';
+    var nyTimesURL = 'http://api.nytimes.com/svc/search/v2/articlesearch.json?q=' +
+                      city + '&sort=newest&api-key=677fe111c8a965cb5a566873b1d34753:6:72581648';
 
     $.getJSON(nyTimesURL, function(data) {
         
@@ -41,19 +42,50 @@ function loadNYData() {
     });
 }
 
+function loadWikiLinks() {
 
-function loadData() {
-
-    var $body = $('body');
+    var city = $('#city').val();
     var $wikiElem = $('#wikipedia-links'); 
-    var $greeting = $('#greeting');
-
+    var wikiURL = 'http://en.wikipedia.org/w/api.php?action=opensearch&search=' +
+                   city + '&format=json&callback=wikiCallback';
+                   
     // clear out old data before new request
     $wikiElem.text("");    
 
+    var wikiRequestTimeout = setTimeout(function() {
+        $wikiElem.text("failed to get wikipedia resource");
+    }, 8000 );
+
+    $.ajax( {
+    url: wikiURL,
+    dataType: 'jsonp',
+    success: function(response) {
+       
+       var articleList = response[1];
+
+       for(var i = 0; i < articleList.length; i++) {
+
+            var article = articleList[i];
+            var url = 'http://en.wikipedia.org/wiki/' + article;
+
+            $wikiElem.append('<li><a href="' + url + '">' + article + '</a></li>');            
+        };
+
+        clearTimeout(wikiRequestTimeout);
+    }
+} );
+}
+
+function loadData() {
+
+    var $body = $('body');  
+    var $greeting = $('#greeting');
+   
+
     loadBgImage();
     loadNYData();
-   
+    loadWikiLinks();
+ 
 
     // load streetview
 
